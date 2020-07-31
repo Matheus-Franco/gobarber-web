@@ -1,22 +1,22 @@
 import React, { useCallback, useRef } from 'react';
 import { Form } from '@unform/web';
-import { FormHandles } from '@unform/core'
-import { FiLogIn, FiUser, FiMail, FiLock, FiArrowLeft } from 'react-icons/fi'
+import { FormHandles } from '@unform/core';
+import { FiUser, FiMail, FiLock, FiArrowLeft } from 'react-icons/fi';
 import * as Yup from 'yup';
 import { Link, useHistory } from 'react-router-dom';
 
-import api from '../../services/api'
+import api from '../../services/api';
 
-import { useToast } from '../../hooks/toast'
+import { useToast } from '../../hooks/toast';
 
 import getValidationErrors from '../../utils/getValidationErrors';
 
-import { Container, Content, Background, AnimationContainer } from './styles'
+import { Container, Content, Background, AnimationContainer } from './styles';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 
-import logoImg from '../../assets/logo.svg'
+import logoImg from '../../assets/logo.svg';
 
 interface SignUpFormData {
   name: string;
@@ -25,39 +25,39 @@ interface SignUpFormData {
 }
 
 const SignUp: React.FC = () => {
-  const formRef = useRef<FormHandles>(null)
-  const { addToast } = useToast()
-  const history = useHistory()
+  const formRef = useRef<FormHandles>(null);
+  const { addToast } = useToast();
+  const history = useHistory();
 
   const handleSubmit = useCallback(async (data: SignUpFormData) => {
     try {
-      formRef.current?.setErrors({})
+      formRef.current?.setErrors({});
 
       const schema = Yup.object().shape({
         name: Yup.string().required("Nome obrigatório."),
         email: Yup.string().required("E-mail obrigatório.").email("Digite um E-mail válido."),
         password: Yup.string().min(6, "No mínimo 6 digitos."),
-      })
+      });
 
       await schema.validate(data, {
         abortEarly: false
-      })
+      });
 
-      await api.post("/users", data)
+      await api.post("/users", data);
 
-      history.push('/')
+      history.push('/');
 
       addToast({
         type: "sucess",
         title: "Cadastro realizado.",
         description: "Você já pode fazer login"
-      })
+      });
 
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
-        const errors = getValidationErrors(err)
+        const errors = getValidationErrors(err);
 
-        formRef.current?.setErrors(errors)
+        formRef.current?.setErrors(errors);
 
         return;
       }
@@ -65,9 +65,9 @@ const SignUp: React.FC = () => {
         type: "error",
         title: "Erro ao realizar cadastro.",
         description: "Ocorreu um erro ao fazer cadastro, tente novamente."
-      })
+      });
     }
-  }, [addToast, history])
+  }, [addToast, history]);
 
   return (
     <Container>
@@ -85,17 +85,14 @@ const SignUp: React.FC = () => {
             <Input name="password" icon={FiLock} type="password" placeholder="Senha" />
 
             <Button type="submit">Cadastrar</Button>
-
           </Form>
 
           <Link to="/">
             <FiArrowLeft />
-        Voltar para Logon
-      </Link>
+             Voltar para Logon
+          </Link>
         </AnimationContainer>
       </Content>
-
-
     </Container>
   )
 }
