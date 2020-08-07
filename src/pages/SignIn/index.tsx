@@ -98,4 +98,4 @@ const SignIn: React.FC = () => {
 
 }
 
-export default SignIn
+export default SignIn;
